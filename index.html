@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>¡Feliz Cumpleaños Mamá! 🎂</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #C9A84C;
+    --cream: #FFF8F0;
+    --deep: #1a0a00;
+    --spa: #4a7c7e;
+    --rose: #c97b84;
+    --warm: #8b4513;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow-x: hidden;
+    background: var(--deep);
+    font-family: 'Lato', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── PANTALLA 1: SOBRE ── */
+  #envelope-screen {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    background: radial-gradient(ellipse at center, #3d1c00 0%, #1a0800 70%, #000 100%);
+    z-index: 100;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .floating-hearts {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .heart {
+    position: absolute; font-size: 1.4rem;
+    animation: floatUp 6s ease-in infinite;
+    opacity: 0;
+  }
+  @keyframes floatUp {
+    0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
+    20%  { opacity: 1; }
+    80%  { opacity: 0.4; }
+    100% { opacity: 0; transform: translateY(-100vh) rotate(20deg); }
+  }
+
+  .envelope-wrap {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+  }
+  .envelope-wrap:active { transform: scale(0.95); }
+
+  .envelope {
+    width: 260px; height: 180px;
+    background: linear-gradient(135deg, #c9a84c, #f0d080, #c9a84c);
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(201,168,76,0.4), 0 0 80px rgba(201,168,76,0.1);
+    animation: envPulse 2s ease-in-out infinite;
+  }
+  @keyframes envPulse {
+    0%,100% { box-shadow: 0 20px 60px rgba(201,168,76,0.4), 0 0 80px rgba(201,168,76,0.1); }
+    50%      { box-shadow: 0 20px 80px rgba(201,168,76,0.7), 0 0 120px rgba(201,168,76,0.3); }
+  }
+
+  .envelope::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 90px;
+    background: linear-gradient(135deg, #e0ba5a, #f5d060);
+    clip-path: polygon(0 0, 50% 60%, 100% 0);
+    border-radius: 8px 8px 0 0;
+    transform-origin: top center;
+    transition: transform 0.6s ease;
+    z-index: 2;
+  }
+  .envelope::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(135deg, transparent 48%, rgba(255,255,255,0.15) 50%, transparent 52%),
+      linear-gradient(-135deg, transparent 48%, rgba(255,255,255,0.08) 50%, transparent 52%);
+    border-radius: 8px;
+  }
+
+  .envelope-seal {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px; height: 50px;
+    background: radial-gradient(circle, #8b0000, #c00020);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    z-index: 3;
+  }
+
+  .tap-hint {
+    margin-top: 30px;
+    color: var(--gold);
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+  .env-title {
+    color: var(--cream);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 10px rgba(201,168,76,0.5);
+  }
+
+  /* ── PANTALLA PRINCIPAL ── */
+  #main-content {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease 0.3s;
+    background: var(--deep);
+    min-height: 100vh;
+  }
+  #main-content.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── HERO 3D ── */
+  .hero {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(74,124,126,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 100% 80% at 50% 100%, rgba(139,69,19,0.4) 0%, transparent 60%),
+      linear-gradient(180deg, #0d0500 0%, #1a0800 40%, #2a1000 100%);
+  }
+
+  /* Partículas tipo burbujas termales */
+  .bubbles {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(201,168,76,0.6), rgba(74,124,126,0.2));
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+  }
+
+  /* Texto 3D */
+  .hero-tag {
+    color: var(--gold);
+    font-size: 0.75rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 10vw, 4.5rem);
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.1;
+    text-shadow:
+      0 0 20px rgba(201,168,76,0.5),
+      2px 4px 0 rgba(139,69,19,0.8),
+      4px 8px 0 rgba(100,40,0,0.5),
+      6px 12px 20px rgba(0,0,0,0.8);
+    transform: perspective(500px) rotateX(5deg);
+    animation: titleFloat 4s ease-in-out infinite;
+    padding: 0 20px;
+  }
+  @keyframes titleFloat {
+    0%,100% { transform: perspective(500px) rotateX(5deg) translateY(0); }
+    50%      { transform: perspective(500px) rotateX(3deg) translateY(-8px); }
+  }
+
+  .hero-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--gold);
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    margin-top: 12px;
+    text-align: center;
+    opacity: 0.9;
+  }
+
+  .scroll-cta {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    color: var(--gold); font-size: 0.75rem;
+    letter-spacing: 3px; text-transform: uppercase;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  .scroll-arrow { font-size: 1.4rem; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+  /* ── TARJETA REGALO PRINCIPAL ── */
+  .gift-section {
+    padding: 60px 20px 40px;
+    text-align: center;
+  }
+
+  .section-label {
+    color: var(--gold);
+    font-size: 0.7rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 6vw, 2.5rem);
+    color: var(--cream);
+    margin-bottom: 30px;
+    line-height: 1.2;
+  }
+
+  /* Tarjeta 3D que se voltea */
+  .flip-card {
+    width: 300px; height: 380px;
+    perspective: 1000px;
+    margin: 0 auto 40px;
+    cursor: pointer;
+  }
+  .flip-inner {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+
+  .flip-front, .flip-back {
+    position: absolute; inset: 0;
+    border-radius: 20px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 30px 25px;
+  }
+
+  .flip-front {
+    background: linear-gradient(135deg, #1e0e02, #3a1a00);
+    border: 1px solid rgba(201,168,76,0.3);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201,168,76,0.2);
+  }
+  .flip-back {
+    background: linear-gradient(135deg, #0d2a2b, #1a4a4c);
+    border: 1px solid rgba(74,124,126,0.4);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+    transform: rotateY(180deg);
+  }
+
+  .hotel-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 8px rgba(201,168,76,0.4));
+    animation: iconPulse 3s ease-in-out infinite;
+  }
+  @keyframes iconPulse {
+    0%,100% { transform: scale(1); }
+    50%      { transform: scale(1.1) rotate(5deg); }
+  }
+
+  .hotel-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .hotel-nights {
+    background: linear-gradient(135deg, var(--gold), #e8c060);
+    color: var(--deep);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 8px 20px;
+    border-radius: 30px;
+    margin: 12px 0;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(201,168,76,0.3);
+  }
+  .hotel-dates {
+    color: rgba(255,248,240,0.7);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  .tap-to-flip {
+    position: absolute; bottom: 18px;
+    color: rgba(201,168,76,0.5);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  .spa-title {
+    font-family: 'Playfair Display', serif;
+    color: #a0d8d9;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  .spa-item {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--cream);
+    font-size: 0.9rem;
+    margin: 8px 0;
+    text-align: left;
+    width: 100%;
+  }
+  .spa-item span:first-child { font-size: 1.3rem; flex-shrink: 0; }
+
+  /* ── AMENIDADES ── */
+  .amenities {
+    padding: 20px 20px 60px;
+  }
+  .amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .amenity-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 16px;
+    padding: 20px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+  }
+  .amenity-card:active {
+    transform: scale(0.95) translateY(-2px);
+    box-shadow: 0 10px 30px rgba(201,168,76,0.2);
+  }
+  .amenity-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 60%);
+  }
+  .amenity-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+  .amenity-name {
+    color: var(--cream);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+  }
+  .amenity-desc {
+    color: rgba(255,248,240,0.5);
+    font-size: 0.72rem;
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  /* ── MENSAJE ── */
+  .message-section {
+    padding: 50px 25px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .message-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 120% 60% at 50% 50%, rgba(201,123,132,0.08) 0%, transparent 70%);
+  }
+  .message-card {
+    background: linear-gradient(135deg, rgba(201,168,76,0.06), rgba(201,123,132,0.04));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 24px;
+    padding: 35px 25px;
+    max-width: 380px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .quote-mark {
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.15;
+    font-family: 'Playfair Display', serif;
+    line-height: 0.5;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .message-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--cream);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .message-sign {
+    color: var(--gold);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── CONTADOR ── */
+  .countdown-section {
+    padding: 40px 20px 60px;
+    text-align: center;
+  }
+  .countdown-grid {
+    display: flex; justify-content: center; gap: 15px;
+    margin-top: 25px;
+  }
+  .count-box {
+    background: linear-gradient(135deg, rgba(74,124,126,0.15), rgba(74,124,126,0.05));
+    border: 1px solid rgba(74,124,126,0.3);
+    border-radius: 14px;
+    padding: 16px 12px;
+    min-width: 70px;
+  }
+  .count-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+  .count-label {
+    color: rgba(255,248,240,0.5);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 40px 20px;
+    text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+  .footer-heart {
+    font-size: 2.5rem;
+    animation: heartBeat 1.5s ease-in-out infinite;
+    display: block;
+    margin-bottom: 12px;
+  }
+  @keyframes heartBeat {
+    0%,100% { transform: scale(1); }
+    14%      { transform: scale(1.2); }
+    28%      { transform: scale(1); }
+    42%      { transform: scale(1.15); }
+    70%      { transform: scale(1); }
+  }
+  .footer-text {
+    color: rgba(255,248,240,0.4);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── CONFETTI ── */
+  .confetti-piece {
+    position: fixed;
+    width: 8px; height: 8px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+    border-radius: 2px;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(135deg, var(--gold), #e8c060);
+    color: var(--deep);
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    z-index: 200;
+    transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+    white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- PANTALLA 1: SOBRE -->
+<div id="envelope-screen">
+  <div class="floating-hearts" id="floatingHearts"></div>
+  <p class="env-title">Tienes un mensaje especial ✨</p>
+  <div class="envelope-wrap" onclick="openEnvelope()">
+    <div class="envelope">
+      <div class="envelope-seal">💌</div>
+    </div>
+  </div>
+  <p class="tap-hint">Toca para abrir</p>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div id="main-content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="bubbles" id="bubbles"></div>
+    <p class="hero-tag">Un regalo con todo el amor</p>
+    <h1 class="hero-title">¡Feliz<br>Cumpleaños<br>Mamá! 🎂</h1>
+    <p class="hero-sub">Este fin de semana es tuyo</p>
+    <div class="scroll-cta">
+      <span class="scroll-arrow">↓</span>
+      <span>Descubre tu regalo</span>
+    </div>
+  </section>
+
+  <!-- REGALO PRINCIPAL -->
+  <section class="gift-section">
+    <p class="section-label">Tu regalo</p>
+    <h2 class="section-title">2 Noches en Hotel<br>Misión Comanjilla</h2>
+    <div class="flip-card" id="flipCard" onclick="flipCard()">
+      <div class="flip-inner">
+        <!-- FRENTE -->
+        <div class="flip-front">
+          <div class="hotel-icon">🏨</div>
+          <p class="hotel-name">Hotel Misión Comanjilla</p>
+          <div class="hotel-nights">🌙 2 Noches · Fin de Semana</div>
+          <p class="hotel-dates">Sábado & Domingo<br>Todo incluido para ti 💛</p>
+          <p style="margin-top:18px; color:rgba(255,248,240,0.6); font-size:0.82rem; line-height:1.6; text-align:center;">
+            Uno de los destinos termales<br>más hermosos de Guanajuato
+          </p>
+          <p class="tap-to-flip">Toca para ver más →</p>
+        </div>
+        <!-- REVERSO -->
+        <div class="flip-back">
+          <p class="spa-title">🌊 Experiencias Incluidas</p>
+          <div class="spa-item"><span>♨️</span><span>Aguas termales naturales</span></div>
+          <div class="spa-item"><span>🏊</span><span>Albercas termales</span></div>
+          <div class="spa-item"><span>🌿</span><span>Jardines y naturaleza</span></div>
+          <div class="spa-item"><span>🍽️</span><span>Restaurante gourmet</span></div>
+          <div class="spa-item"><span>🛁</span><span>Habitación de lujo</span></div>
+          <div class="spa-item"><span>☀️</span><span>Descanso total</span></div>
+          <p class="tap-to-flip">← Toca para volver</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AMENIDADES -->
+  <section class="amenities">
+    <p class="section-label" style="text-align:center">Lo que te espera</p>
+    <h2 class="section-title" style="text-align:center">Experiencias Especiales</h2>
+    <div class="amenities-grid">
+      <div class="amenity-card">
+        <span class="amenity-icon">♨️</span>
+        <p class="amenity-name">Aguas Termales</p>
+        <p class="amenity-desc">Manantiales naturales de Comanjilla</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">💆</span>
+        <p class="amenity-name">Relax Total</p>
+        <p class="amenity-desc">Sin pendientes, solo descanso</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🌅</span>
+        <p class="amenity-name">Amanecer & Atardecer</p>
+        <p class="amenity-desc">Vistas al campo guanajuatense</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🍷</span>
+        <p class="amenity-name">Gastronomía</p>
+        <p class="amenity-desc">Cocina tradicional mexicana</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">🌿</span>
+        <p class="amenity-name">Jardines</p>
+        <p class="amenity-desc">Espacios naturales para caminar</p>
+      </div>
+      <div class="amenity-card">
+        <span class="amenity-icon">⭐</span>
+        <p class="amenity-name">Solo para Ti</p>
+        <p class="amenity-desc">Porque te lo mereces todo</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENSAJE PERSONAL -->
+  <section class="message-section">
+    <p class="section-label">Con todo mi amor</p>
+    <h2 class="section-title">Un Mensaje para Ti</h2>
+    <div class="message-card">
+      <span class="quote-mark">"</span>
+      <p class="message-text">
+        Mamá, cada año que pasa me doy más cuenta de todo lo que has dado por nosotros.
+        Hoy quiero que descanses, que te consientas y que disfrutes cada momento
+        de este fin de semana como solo tú te lo mereces.
+        ¡Feliz cumpleaños! 🎉
+      </p>
+      <p class="message-sign">Con todo el amor del mundo 💛</p>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="countdown-section">
+    <p class="section-label">Tu aventura comienza en</p>
+    <h2 class="section-title">Cuenta Regresiva</h2>
+    <div class="countdown-grid">
+      <div class="count-box">
+        <span class="count-number" id="cd-days">--</span>
+        <span class="count-label">Días</span>
+      </div>
+      <div class="count-box">
+        <span class="count-number" id="cd-hours">--</span>
+        <span class="count-label">Horas</span>
+      </div>
+      <div class="count-box">
+        <span class="count-number" id="cd-mins">--</span>
+        <span class="count-label">Minutos</span>
+      </div>
+    </div>
+    <p style="color:rgba(255,248,240,0.35); font-size:0.75rem; margin-top:18px; letter-spacing:1px;">
+      Próximo fin de semana · Hotel Misión Comanjilla
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-heart">❤️</span>
+    <p class="footer-text">Hecho con amor · Feliz Cumpleaños</p>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">¡Hecho con mucho amor! 💛</div>
+
+<script>
+// ── Corazones flotantes en la pantalla del sobre
+const heartEmojis = ['💛','🌸','✨','💕','🌺','⭐'];
+const fh = document.getElementById('floatingHearts');
+for (let i = 0; i < 18; i++) {
+  const h = document.createElement('div');
+  h.className = 'heart';
+  h.textContent = heartEmojis[i % heartEmojis.length];
+  h.style.left = Math.random() * 100 + '%';
+  h.style.bottom = '-20px';
+  h.style.animationDelay = Math.random() * 6 + 's';
+  h.style.animationDuration = (4 + Math.random() * 5) + 's';
+  fh.appendChild(h);
+}
+
+// ── Abrir sobre
+function openEnvelope() {
+  const screen = document.getElementById('envelope-screen');
+  const main   = document.getElementById('main-content');
+  screen.style.opacity = '0';
+  screen.style.transform = 'scale(1.05)';
+  setTimeout(() => { screen.style.display = 'none'; }, 800);
+  main.classList.add('visible');
+  launchConfetti();
+  showToast();
+  startBubbles();
+  startCountdown();
+}
+
+// ── Tarjeta que se voltea
+function flipCard() {
+  document.getElementById('flipCard').classList.toggle('flipped');
+}
+
+// ── Confetti
+function launchConfetti() {
+  const colors = ['#C9A84C','#f0d080','#c97b84','#4a7c7e','#fff8f0','#e8c060'];
+  for (let i = 0; i < 60; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.top  = '-10px';
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    const dur  = 2 + Math.random() * 2;
+    const rotZ = Math.random() * 720 - 360;
+    c.animate([
+      { top: '-10px',  opacity: 1, transform: `rotate(0deg) translateX(0)` },
+      { top: '110vh',  opacity: 0, transform: `rotate(${rotZ}deg) translateX(${Math.random()*100-50}px)` }
+    ], { duration: dur * 1000, delay: Math.random() * 1500, easing: 'ease-in' })
+    .onfinish = () => c.remove();
+  }
+}
+
+// ── Toast
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Burbujas termales
+function startBubbles() {
+  const container = document.getElementById('bubbles');
+  function makeBubble() {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    const size = 4 + Math.random() * 14;
+    b.style.width  = size + 'px';
+    b.style.height = size + 'px';
+    b.style.left   = Math.random() * 100 + '%';
+    b.style.bottom = '0';
+    b.style.animationDuration  = (5 + Math.random() * 8) + 's';
+    b.style.animationDelay     = Math.random() * 4 + 's';
+    container.appendChild(b);
+    setTimeout(() => b.remove(), 14000);
+  }
+  for (let i = 0; i < 20; i++) makeBubble();
+  setInterval(makeBubble, 600);
+}
+
+// ── Countdown al próximo sábado
+function startCountdown() {
+  function update() {
+    const now = new Date();
+    const day  = now.getDay(); // 0=dom, 6=sab
+    const daysToSat = (6 - day + 7) % 7 || 7;
+    const nextSat = new Date(now);
+    nextSat.setDate(now.getDate() + daysToSat);
+    nextSat.setHours(14, 0, 0, 0);
+    const diff = nextSat - now;
+    if (diff <= 0) { document.getElementById('cd-days').textContent = '¡YA!'; return; }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+  }
+  update();
+  setInterval(update, 30000);
+}
+
+// ── Parallax suave en scroll
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const title = document.querySelector('.hero-title');
+  if (title) title.style.transform = `perspective(500px) rotateX(5deg) translateY(${scrollY * 0.15}px)`;
+}, { passive: true });
+</script>
+</body>
+</html>
